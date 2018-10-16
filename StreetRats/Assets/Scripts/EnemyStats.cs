@@ -8,6 +8,7 @@ public class EnemyStats : MonoBehaviour
     [SerializeField] private int speed;
     [SerializeField] private int attackDamage;
 
+    private GameObject[] patrolPoints; //Note: there is no setter
     private bool isAgressive;
 
     public enum FactionType { mouse, rat};
@@ -16,7 +17,7 @@ public class EnemyStats : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-		
+        patrolPoints = GameObject.FindGameObjectsWithTag("PatrolPoints");
 	}
 
     // Update is called once per frame
@@ -48,6 +49,11 @@ public class EnemyStats : MonoBehaviour
     public FactionType GetFactionType()
     {
         return faction;
+    }
+
+    public GameObject[] GetPatrolPoints()
+    {
+        return patrolPoints;
     }
 
     public void SetHealth(int amount)

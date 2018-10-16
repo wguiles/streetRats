@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FactionReputation : MonoBehaviour
 {
@@ -8,6 +9,12 @@ public class FactionReputation : MonoBehaviour
     private int reputationMin = 0;
     private int reputationMax = 100;
     private float aggroRadius;
+
+
+    //reference for the bar at the top of the screen
+
+    [SerializeField]
+    private Image ReputationSliderImage;
 
 	// Use this for initialization
 	void Start ()
@@ -43,5 +50,12 @@ public class FactionReputation : MonoBehaviour
         {
             reputationPoints += points;
         }
+
+        updateUI();
+    }
+
+    private void updateUI()
+    {
+        ReputationSliderImage.fillAmount = (float)reputationPoints / 100;
     }
 }

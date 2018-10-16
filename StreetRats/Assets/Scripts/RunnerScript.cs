@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class RunnerScript : EnemyStats
 {
@@ -8,10 +9,13 @@ public class RunnerScript : EnemyStats
     [SerializeField] private GameObject[] cheeseList;
     private GameObject closestCheese;
     private bool pickupCheese;
+    private NavMeshAgent agent;
 
 	// Use this for initialization
 	void Start ()
     {
+        agent = GetComponent<NavMeshAgent>();
+
         //Starts moving towards the closest cheese
         Move(TrackCheese());
 	}
@@ -32,7 +36,7 @@ public class RunnerScript : EnemyStats
 
     private void Move(Vector3 target)
     {
-        
+        agent.destination = target;
     }
 
     private Vector3 TrackCheese()

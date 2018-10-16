@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header("General")]
     public MovementType moveType;
     public float speed;
+    private int cheeseAmount;
 
 
     private float direction = 1.0f;
@@ -22,8 +23,10 @@ public class PlayerController : MonoBehaviour
     [Header("Dash")]
     public float dashSpeed;
     public float dashTime;
+    public float dashRechargeTime;
     private Vector3 dashDirection;
     private bool isDashing = false;
+    private bool canDash   = true;
 
 
 
@@ -48,11 +51,11 @@ public class PlayerController : MonoBehaviour
                 transform.Translate(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * speed * Time.deltaTime);
 
 
-                if (Input.GetButtonDown("A Button"))
+                if (Input.GetButtonDown("A Button") || Input.GetButtonDown("A Button Windows"))
                 {
                     gunChild.SetActive(true);
                 }
-                else if (Input.GetButtonUp("A Button"))
+                else if (Input.GetButtonUp("A Button") && canDash || Input.GetButtonUp("A Button Windows") && canDash)
                 {
                     dashDirection = gunChild.transform.up;
                     StartCoroutine(Dashing());
@@ -116,13 +119,14 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Moving down");
         }
 
-        if (Input.GetButtonDown("A Button"))
+        if (Input.GetButtonDown("A Button") || Input.GetButtonDown("A Button Windows"))
         {
             direction = 0.0f;
             gunChild.SetActive(true);
         }
-        else if (Input.GetButtonUp("A Button"))
+        else if (Input.GetButtonUp("A Button") && canDash || Input.GetButtonUp("A Button Windows") && canDash)
         {
+
             direction = 1.0f;
             gunChild.SetActive(false);
 
@@ -166,9 +170,18 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Dashing()
     {
+        canDash = false;
         isDashing = true;
         yield return new WaitForSeconds(dashTime);
         isDashing = false;
+        StartCoroutine(RechargeDash());
+
+    }
+
+    private IEnumerator RechargeDash()
+    {
+        yield return new WaitForSeconds(dashRechargeTime);
+        canDash = true;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -176,6 +189,34 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Dank" && isDashing)
         {
             Destroy(collision.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Cheese")
+        {
+            cheeseAmount ++;
+            Destroy(other.gameObject);
+        }
+        else if (other.gameObject.tag == "Mice_Hideout")
+        {
+            while (cheeseAmount > 0)
+            {
+                cheeseAmount--;
+                GameObject.Find("FactionReputation").GetComponent<FactionReputation>().ModifyReputationPoints(1);
+            }
+
+        }
+        else if (other.gameObject.tag == "Rats_Hideout")
+        {
+
+            while (cheeseAmount > 0)
+            {
+                cheeseAmount--;
+                GameObject.Find("FactionReputation").GetComponent<FactionReputation>().ModifyReputationPoints(-1);
+            }
+          
         }
     }
 

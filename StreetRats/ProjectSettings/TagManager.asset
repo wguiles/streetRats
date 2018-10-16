@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: [Cheese, Dank]
+  tags:
+  - Cheese
+  - Dank
+  - Rats_Hideout
+  - Mice_Hideout
   layers:
   - Default
   - TransparentFX
